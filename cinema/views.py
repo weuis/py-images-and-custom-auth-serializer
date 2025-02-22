@@ -26,6 +26,7 @@ from cinema.serializers import (
     OrderListSerializer, MovieImageSerializer,
 )
 
+
 class GenreViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -68,10 +69,12 @@ class MovieViewSet(
     serializer_class = MovieSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
     @staticmethod
     def _params_to_ints(qs):
         """Converts a list of string IDs to a list of integers"""
         return [int(str_id) for str_id in qs.split(",")]
+
     def get_queryset(self):
         """Retrieve the movies with filters"""
         title = self.request.query_params.get("title")
@@ -87,6 +90,7 @@ class MovieViewSet(
             actors_ids = self._params_to_ints(actors)
             queryset = queryset.filter(actors__id__in=actors_ids)
         return queryset.distinct()
+
     def get_serializer_class(self):
         if self.action == "list":
             return MovieListSerializer
